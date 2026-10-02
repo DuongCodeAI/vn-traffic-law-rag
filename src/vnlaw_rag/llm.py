@@ -15,7 +15,7 @@ import requests
 log = logging.getLogger(__name__)
 
 DEFAULT_MODELS = {
-    "gemini": os.getenv("GEMINI_MODEL", "gemini-2.5-flash"),
+    "gemini": os.getenv("GEMINI_MODEL", "gemini-3.5-flash"),
     "groq": os.getenv("GROQ_MODEL", "openai/gpt-oss-120b"),
     "local": os.getenv("LOCAL_MODEL", "local"),
 }

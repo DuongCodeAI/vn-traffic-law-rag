@@ -1,0 +1,30 @@
+[
+  {
+    "id": "nd168-2024",
+    "number": "Nghị định 168/2024/NĐ-CP",
+    "title": "Quy định xử phạt vi phạm hành chính về trật tự, an toàn giao thông trong lĩnh vực giao thông đường bộ; trừ điểm, phục hồi điểm giấy phép lái xe",
+    "effective_from": "2025-01-01",
+    "effective_to": null,
+    "url": "https://vbpl.vn/van-ban/chi-tiet/nghi-dinh--173920",
+    "note": "Bản hợp nhất trên vbpl: đã áp NĐ 238/2026/NĐ-CP (hiệu lực 15/08/2026) và phần bãi bỏ bởi NĐ 336/2025/NĐ-CP (hiệu lực 01/03/2026)"
+  },
+  {
+    "id": "luat36-2024",
+    "number": "Luật Trật tự, an toàn giao thông đường bộ số 36/2024/QH15",
+    "title": "Luật Trật tự, an toàn giao thông đường bộ",
+    "effective_from": "2025-01-01",
+    "effective_to": null,
+    "url": "https://vbpl.vn/van-ban/chi-tiet/luat-trat-tu-an-toan-giao-thong-duong-bo-so-36-2024-qh15--170620",
+    "note": "Luật 118/2025/QH15 (hiệu lực 01/07/2026) sửa ~20 điều nhưng vbpl chưa liên kết -> xem NOTES.md"
+  },
+  {
+    "id": "nd100-2019",
+    "number": "Nghị định 100/2019/NĐ-CP",
+    "title": "Quy định xử phạt vi phạm hành chính trong lĩnh vực giao thông đường bộ và đường sắt (văn bản cũ)",
+    "effective_from": "2020-01-01",
+    "effective_to": "2025-01-01",
+    "replaced_by": "nd168-2024",
+    "url": "",
+    "note": "Giữ lại để trả lời câu hỏi về thời điểm trước 2025 và để đo tỉ lệ 'trả lời bằng luật cũ' khi tắt bộ lọc hiệu lực"
+  }
+]

@@ -5,9 +5,9 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 *.egg-info/
-
-# dữ liệu tải về và index build ra -> để trên HF Hub, không commit
-data/raw/
-data/processed/*.npy
-data/processed/*.pkl
 .ipynb_checkpoints/
+
+# index + model build trên Kaggle -> để trên HF Hub, không commit
+data/processed/dense*/
+models/
+results/*.json

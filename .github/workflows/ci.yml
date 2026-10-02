@@ -1,0 +1,27 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -e ".[dev]"
+      - run: ruff check src tests
+      - run: pytest -q
+
+      # eval nhanh chỉ với BM25 (không cần model) để bắt lỗi parser/retriever làm tụt recall
+      - name: eval BM25
+        run: |
+          if [ ! -f data/eval/questions.jsonl ] || [ ! -f data/processed/chunks.jsonl ]; then
+            echo "chưa có bộ eval, bỏ qua"; exit 0
+          fi
+          python -m vnlaw_rag.eval.run_eval --configs bm25 --out results/ci.json
+          python scripts/check_eval.py results/ci.json --min-recall5 0.55
+          cat results/ci.md >> $GITHUB_STEP_SUMMARY

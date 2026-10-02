@@ -49,6 +49,18 @@ def test_article_without_clauses():
     assert "hiệu lực" in c.text
 
 
+def test_amendment_flags_go_to_chunk():
+    lines = SAMPLE.strip().splitlines()
+    flags = [None] * len(lines)
+    i = next(i for i, ln in enumerate(lines) if ln.startswith("a) Không chấp hành hiệu lệnh của đèn"))
+    flags[i] = "amended"
+    chunks = build_chunks(parse_lines(lines, flags), "nd-test", "NĐ test", max_clause_chars=120)
+    c = next(c for c in chunks if c.id == "nd-test/d7/k2/a")
+    assert c.status == "amended"
+    assert c.citation.endswith("(được sửa đổi, bổ sung)")
+    assert next(c for c in chunks if c.id == "nd-test/d7/k2/b").status == ""
+
+
 def test_refs_and_backrefs():
     assert extract_refs("hành vi quy định tại điểm a, điểm b khoản 2 Điều này", "x", "7") == [
         "x/d7/k2/a", "x/d7/k2/b"]

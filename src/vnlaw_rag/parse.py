@@ -30,6 +30,7 @@ REF_POINT_RE = re.compile(r"điểm\s+([a-zđ]\d?)", re.IGNORECASE)
 class Point:
     label: str
     text: str
+    status: str | None = None  # amended / added / repealed (nhãn của vbpl)
 
 
 @dataclass
@@ -38,6 +39,7 @@ class Clause:
     text: str  # câu dẫn
     points: list[Point] = field(default_factory=list)
     extra: list[str] = field(default_factory=list)  # dòng tiếp theo không phải điểm
+    status: str | None = None
 
 
 @dataclass
@@ -60,18 +62,24 @@ class Chunk:
     text: str  # text đưa vào index (đã ghép ngữ cảnh)
     citation: str
     refs: list[str] = field(default_factory=list)  # id các chunk mà chunk này nhắc tới
+    status: str = ""  # "", amended, added, repealed
 
     def to_dict(self) -> dict:
         return self.__dict__.copy()
 
 
-def parse_lines(lines: list[str]) -> list[Article]:
+STATUS_NOTE = {"amended": " (được sửa đổi, bổ sung)", "added": " (được bổ sung)", "repealed": " (đã bị bãi bỏ)"}
+
+
+def parse_lines(lines: list[str], flags: list[str | None] | None = None) -> list[Article]:
+    """flags[i]: nhãn sửa đổi của dòng i (lấy từ vbpl), None nếu không có."""
     articles: list[Article] = []
     chapter = section = ""
     cur: Article | None = None
-    pending_chapter_title = False
+    pending_chapter_title = pending_section_title = False
+    flags = flags or [None] * len(lines)
 
-    for raw in lines:
+    for raw, flag in zip(lines, flags, strict=True):
         line = nfc(raw).strip()
         if not line:
             continue
@@ -92,7 +100,12 @@ def parse_lines(lines: list[str]) -> list[Article]:
             continue
         if m := SECTION_RE.match(line):
             section = f"Mục {m.group(1)}. {m.group(2)}".strip(". ")
+            pending_section_title = not m.group(2)
             cur = None
+            continue
+        if pending_section_title and cur is None and line.isupper():
+            section += f". {line.capitalize()}"
+            pending_section_title = False
             continue
         if m := ARTICLE_RE.match(line):
             cur = Article(label=m.group(1), title=m.group(2).strip(), chapter=chapter, section=section)
@@ -103,9 +116,9 @@ def parse_lines(lines: list[str]) -> list[Article]:
             continue  # phần đầu văn bản (căn cứ, quốc hiệu...) bỏ qua
 
         if m := CLAUSE_RE.match(line):
-            cur.clauses.append(Clause(label=m.group(1), text=m.group(2).strip()))
+            cur.clauses.append(Clause(label=m.group(1), text=m.group(2).strip(), status=flag))
         elif (m := POINT_RE.match(line)) and cur.clauses:
-            cur.clauses[-1].points.append(Point(label=m.group(1), text=m.group(2).strip()))
+            cur.clauses[-1].points.append(Point(label=m.group(1), text=m.group(2).strip(), status=flag))
         elif cur.clauses:
             c = cur.clauses[-1]
             if c.points:
@@ -168,19 +181,22 @@ def build_chunks(articles: list[Article], doc_id: str, doc_number: str, max_clau
             full_clause = "\n".join([lead] + [f"{p.label}) {p.text}" for p in c.points] + ([extra] if extra else []))
             # khoản ngắn thì giữ nguyên cả khoản, đỡ mất ngữ cảnh giữa các điểm
             if not c.points or len(full_clause) <= max_clause_chars // 3:
+                st = c.status or next((p.status for p in c.points if p.status), "") or ""
                 chunks.append(Chunk(
                     id=chunk_id(doc_id, a.label, c.label), doc_id=doc_id, article=a.label, clause=c.label,
-                    point="", text=f"{head}\n{full_clause}", citation=_cite("", c.label, a.label, doc_number),
-                    refs=extract_refs(full_clause, doc_id, a.label),
+                    point="", text=f"{head}\n{full_clause}",
+                    citation=_cite("", c.label, a.label, doc_number) + STATUS_NOTE.get(st, ""),
+                    refs=extract_refs(full_clause, doc_id, a.label), status=st,
                 ))
                 continue
             for p in c.points:
                 text = f"{head}\n{lead}\n{p.label}) {p.text}"
+                st = p.status or c.status or ""
                 chunks.append(Chunk(
                     id=chunk_id(doc_id, a.label, c.label, p.label), doc_id=doc_id, article=a.label,
                     clause=c.label, point=p.label, text=text,
-                    citation=_cite(p.label, c.label, a.label, doc_number),
-                    refs=extract_refs(p.text, doc_id, a.label),
+                    citation=_cite(p.label, c.label, a.label, doc_number) + STATUS_NOTE.get(st, ""),
+                    refs=extract_refs(p.text, doc_id, a.label), status=st,
                 ))
             if extra:
                 chunks.append(Chunk(

@@ -72,7 +72,8 @@ class Retriever:
         if not use_validity:
             return None
         ok_docs = effective_doc_ids(self.sources, as_of)
-        return {i for i, c in enumerate(self.chunks) if c["doc_id"] in ok_docs}
+        # điều khoản đã bị bãi bỏ vẫn hiện trên vbpl (kèm nhãn) -> không cho vào kết quả
+        return {i for i, c in enumerate(self.chunks) if c["doc_id"] in ok_docs and c.get("status") != "repealed"}
 
     def search(self, query: str, k: int = 5, as_of: date | None = None,
                cfg: SearchConfig | None = None) -> list[Hit]:
@@ -133,5 +134,5 @@ class Retriever:
 
 
 def build_backrefs_from_dicts(chunks: list[dict]) -> dict[str, list[str]]:
-    objs = [Chunk(**{k: c[k] for k in Chunk.__dataclass_fields__}) for c in chunks]
+    objs = [Chunk(**{k: c[k] for k in Chunk.__dataclass_fields__ if k in c}) for c in chunks]
     return build_backrefs(objs)

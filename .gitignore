@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# dữ liệu tải về và index build ra -> để trên HF Hub, không commit
+data/raw/
+data/processed/*.npy
+data/processed/*.pkl
+.ipynb_checkpoints/

@@ -1,0 +1,38 @@
+[project]
+name = "vnlaw-rag"
+version = "0.1.0"
+description = "Hỏi đáp Luật Giao thông Việt Nam (NĐ 168/2024, Luật TTATGTĐB 2024) bằng hybrid RAG có trích dẫn Điều/Khoản/Điểm"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Tiến Dương", email = "duongcodeai2@gmail.com" }]
+dependencies = [
+    "requests>=2.31",
+    "python-dotenv>=1.0",
+    "beautifulsoup4>=4.12",
+]
+
+[project.optional-dependencies]
+# phần nặng (embedding, rerank) tách riêng để CI và máy yếu vẫn chạy được phần lõi
+dense = ["numpy>=1.26", "sentence-transformers>=3.0"]
+api = ["fastapi>=0.110", "uvicorn>=0.29"]
+dev = ["pytest>=8", "ruff>=0.5"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

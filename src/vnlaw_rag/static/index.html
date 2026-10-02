@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hỏi luật giao thông</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 760px; margin: 24px auto; padding: 0 16px; color: #222; }
+  h1 { font-size: 20px; }
+  form { display: flex; gap: 8px; }
+  input[type=text] { flex: 1; padding: 10px; font-size: 15px; border: 1px solid #bbb; border-radius: 6px; }
+  button { padding: 10px 16px; border: 0; border-radius: 6px; background: #1f6feb; color: #fff; cursor: pointer; }
+  .opts { margin: 8px 0 16px; font-size: 13px; color: #555; }
+  .ans { white-space: pre-wrap; background: #f6f8fa; padding: 12px; border-radius: 6px; }
+  .warn { color: #b35900; font-size: 13px; margin-top: 6px; }
+  details { border-left: 3px solid #ddd; padding: 4px 10px; margin: 8px 0; }
+  details pre { white-space: pre-wrap; font-size: 13px; }
+  .meta { font-size: 12px; color: #777; }
+  .examples span { cursor: pointer; color: #1f6feb; margin-right: 12px; font-size: 13px; }
+</style>
+</head>
+<body>
+<h1>Hỏi đáp Luật Giao thông (NĐ 168/2024, Luật TTATGTĐB 2024)</h1>
+<form id="f">
+  <input type="text" id="q" placeholder="vd: xe máy vượt đèn đỏ phạt bao nhiêu?" autofocus>
+  <button>Hỏi</button>
+</form>
+<div class="opts">
+  <label><input type="checkbox" id="searchOnly"> chỉ tìm điều khoản (không gọi LLM)</label>
+  &nbsp; Thời điểm áp dụng: <input type="date" id="asOf">
+</div>
+<div class="examples">
+  <span>xe máy vượt đèn đỏ phạt bao nhiêu</span>
+  <span>o to khong doi mu bao hiem</span>
+  <span>uống bia rồi đi xe máy bị phạt thế nào</span>
+</div>
+<div id="out"></div>
+<script>
+const out = document.getElementById('out');
+const esc = s => s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+document.querySelectorAll('.examples span').forEach(s => s.onclick = () => {
+  document.getElementById('q').value = s.textContent; document.getElementById('f').requestSubmit();
+});
+document.getElementById('f').onsubmit = async e => {
+  e.preventDefault();
+  const q = document.getElementById('q').value.trim();
+  if (!q) return;
+  const searchOnly = document.getElementById('searchOnly').checked;
+  const asOf = document.getElementById('asOf').value || null;
+  out.innerHTML = '<p class="meta">đang tìm...</p>';
+  const t0 = performance.now();
+  const r = await fetch(searchOnly ? '/search' : '/answer', {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({q, as_of: asOf})
+  });
+  const data = await r.json();
+  const ms = Math.round(performance.now() - t0);
+  if (searchOnly) {
+    const restored = data.debug && data.debug.restored ? `<p class="meta">đã thêm dấu: ${esc(data.debug.restored)}</p>` : '';
+    out.innerHTML = restored + data.hits.map(h => cite(h, h.expanded_from ? ' (kéo theo do tham chiếu)' : '')).join('')
+      + `<p class="meta">${ms} ms</p>`;
+    return;
+  }
+  out.innerHTML = `<div class="ans">${esc(data.answer)}</div>`
+    + (data.warnings || []).map(w => `<div class="warn">⚠ ${esc(w)}</div>`).join('')
+    + data.citations.map(c => cite(c, '')).join('')
+    + `<p class="meta">${esc(data.provider || '')} · ${ms} ms</p>`;
+};
+function cite(c, extra) {
+  return `<details><summary>${esc(c.citation)}${extra}</summary><pre>${esc(c.text)}</pre></details>`;
+}
+</script>
+</body>
+</html>

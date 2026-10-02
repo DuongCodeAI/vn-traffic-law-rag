@@ -94,7 +94,8 @@ class DenseIndex:
 
     @classmethod
     def load(cls, folder: str | Path, device: str | None = None, model_override: str | None = None,
-             backend_override: str | None = None, threads: int | None = None) -> "DenseIndex":
+             backend_override: str | None = None, onnx_file: str | None = None,
+             threads: int | None = None) -> "DenseIndex":
         """model_override/backend_override: index build trên Kaggle bằng torch,
         chạy trên laptop bằng bản ONNX của CÙNG model."""
         folder = Path(folder)
@@ -103,4 +104,6 @@ class DenseIndex:
             cfg.model_name = model_override
         if backend_override:
             cfg.backend = backend_override
+        if onnx_file:
+            cfg.onnx_file = onnx_file
         return cls(np.load(folder / "vectors.npy"), Embedder(cfg, device=device, threads=threads))

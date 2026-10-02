@@ -13,7 +13,8 @@ dependencies = [
 
 [project.optional-dependencies]
 # phần nặng (embedding, rerank) tách riêng để CI và máy yếu vẫn chạy được phần lõi
-dense = ["numpy>=1.26", "sentence-transformers>=3.0"]
+onnx = ["numpy>=1.26", "onnxruntime>=1.18", "tokenizers>=0.19"]
+train = ["numpy>=1.26", "sentence-transformers>=3.0", "pyvi>=0.1.1"]
 api = ["fastapi>=0.110", "uvicorn>=0.29"]
 dev = ["pytest>=8", "ruff>=0.5"]
 
@@ -23,6 +24,9 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+vnlaw_rag = ["static/*.html"]
 
 [tool.ruff]
 line-length = 120

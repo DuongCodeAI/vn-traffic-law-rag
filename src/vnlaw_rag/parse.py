@@ -18,12 +18,14 @@ ARTICLE_RE = re.compile(r"^Điều\s+(\d+[a-z]?)\s*[.:]\s*(.*)$")
 CLAUSE_RE = re.compile(r"^(\d+[a-z]?)\.\s+(.+)$")
 POINT_RE = re.compile(r"^([a-zđ]\d?)\)\s+(.+)$")
 
-# "điểm a khoản 1 Điều 6", "điểm a, điểm b khoản 2 Điều này", "khoản 3 Điều 7"
-REF_RE = re.compile(
-    r"((?:điểm\s+[a-zđ]\d?\s*,?\s*)*)khoản\s+(\d+[a-z]?)\s+(Điều\s+(\d+[a-z]?)|Điều này)",
-    re.IGNORECASE,
-)
+# Một nhóm tham chiếu: "điểm a, điểm b khoản 2" hoặc "khoản 3". Điều của nhóm là chữ "Điều N / Điều này"
+# đứng SAU nó gần nhất trong cùng câu, vì NĐ 168 hay viết:
+#   "điểm h, điểm i khoản 3; điểm a, điểm b khoản 4; điểm c khoản 10 Điều này"
+REF_GROUP_RE = re.compile(r"((?:điểm\s+[a-zđ]\d?\s*,?\s*)*)khoản\s+(\d+[a-z]?)\b", re.IGNORECASE)
+REF_ARTICLE_RE = re.compile(r"Điều\s+(\d+[a-z]?|này)\b")
 REF_POINT_RE = re.compile(r"điểm\s+([a-zđ]\d?)", re.IGNORECASE)
+# câu có những cụm này mới là "hình phạt bổ sung" trỏ ngược về hành vi (khác với "trừ các hành vi ..." = ngoại lệ)
+PENALTY_RE = re.compile(r"còn bị|bị trừ điểm|trừ điểm giấy phép|tước quyền sử dụng|tịch thu|buộc ", re.IGNORECASE)
 
 
 @dataclass
@@ -152,9 +154,12 @@ def chunk_id(doc_id: str, article: str, clause: str = "", point: str = "") -> st
 
 def extract_refs(text: str, doc_id: str, article: str) -> list[str]:
     refs = []
-    for m in REF_RE.finditer(text):
-        points_str, clause, art_full, art = m.groups()
-        art = article if art_full.lower() == "điều này" else art
+    for m in REF_GROUP_RE.finditer(text):
+        points_str, clause = m.groups()
+        tail = text[m.end():]
+        end = tail.find(".")
+        am = REF_ARTICLE_RE.search(tail[: end if end >= 0 else None])
+        art = article if am is None or am.group(1) == "này" else am.group(1)
         pts = REF_POINT_RE.findall(points_str or "")
         if pts:
             refs += [chunk_id(doc_id, art, clause, p.lower()) for p in pts]
@@ -205,6 +210,14 @@ def build_chunks(articles: list[Article], doc_id: str, doc_number: str, max_clau
                     citation=_cite("", c.label, a.label, doc_number),
                     refs=extract_refs(extra, doc_id, a.label),
                 ))
+    # vbpl có chỗ đánh trùng nhãn điểm (vd. 2 điểm "đ)" liền nhau ở Điều 16 NĐ 168) -> thêm hậu tố cho id
+    seen: dict[str, int] = {}
+    for ch in chunks:
+        if ch.id in seen:
+            seen[ch.id] += 1
+            ch.id = f"{ch.id}~{seen[ch.id]}"
+        else:
+            seen[ch.id] = 1
     return chunks
 
 
@@ -218,6 +231,9 @@ def build_backrefs(chunks: list[Chunk]) -> dict[str, list[str]]:
     ids = {c.id for c in chunks}
     back: dict[str, list[str]] = {}
     for c in chunks:
+        body = c.text.split("\n", 1)[-1]
+        if not PENALTY_RE.search(body):
+            continue  # "trừ các hành vi quy định tại..." là ngoại lệ, không phải hình phạt bổ sung
         for r in c.refs:
             targets = [r] if r in ids else [i for i in ids if i.startswith(r + "/")]
             if not targets and r.count("/") >= 3:

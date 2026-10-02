@@ -65,6 +65,10 @@ def test_refs_and_backrefs():
     assert extract_refs("hành vi quy định tại điểm a, điểm b khoản 2 Điều này", "x", "7") == [
         "x/d7/k2/a", "x/d7/k2/b"]
     assert extract_refs("theo khoản 3 Điều 6", "x", "7") == ["x/d6/k3"]
+    # nhiều nhóm dùng chung "Điều này" ở cuối câu
+    assert extract_refs("hành vi quy định tại điểm h, điểm i khoản 3; điểm a khoản 4; khoản 5 Điều này bị trừ", "x", "6") == [
+        "x/d6/k3/h", "x/d6/k3/i", "x/d6/k4/a", "x/d6/k5"]
+    assert extract_refs("điểm b khoản 2 Điều 7 và điểm c khoản 1 Điều 8.", "x", "6") == ["x/d7/k2/b", "x/d8/k1/c"]
     _, chunks = _chunks()
     back = build_backrefs(chunks)
     assert back["nd-test/d7/k2/a"] == ["nd-test/d7/k3"]

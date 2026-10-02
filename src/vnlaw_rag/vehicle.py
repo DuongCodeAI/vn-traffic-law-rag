@@ -3,7 +3,11 @@
 NĐ 168 chia Điều theo loại xe (ô tô / mô tô, xe gắn máy / xe đạp / người đi bộ...)
 và nhiều khoản giữa các Điều gần như trùng chữ, chỉ khác mức phạt. Người dùng hỏi
 "xe máy vượt đèn đỏ" mà retriever trả về Điều của ô tô là sai mức phạt hoàn toàn.
+
+Phải so khớp theo ranh giới từ: "ô tô" là chuỗi con của "mô tô"!
 """
+
+import re
 
 from .text import nfc, remove_diacritics
 
@@ -11,23 +15,28 @@ VEHICLE_KEYWORDS: dict[str, list[str]] = {
     "oto": ["ô tô", "xe hơi", "xe con", "xe tải", "xe khách", "oto", "xe 4 bánh", "xe bốn bánh"],
     "moto": ["mô tô", "xe máy", "xe gắn máy", "xe moto", "xe máy điện", "xe 2 bánh", "xe hai bánh"],
     "bicycle": ["xe đạp", "xe thô sơ"],
-    "pedestrian": ["người đi bộ", "đi bộ"],
+    "pedestrian": ["người đi bộ"],
     "tractor": ["máy kéo", "xe máy chuyên dùng"],
 }
 
 
+def _pattern(kws: list[str]) -> re.Pattern:
+    alts = sorted({k for kw in kws for k in (kw, remove_diacritics(kw))}, key=len, reverse=True)
+    return re.compile(r"(?<!\w)(?:" + "|".join(re.escape(a) for a in alts) + r")(?!\w)")
+
+
+_PATTERNS = {v: _pattern(kws) for v, kws in VEHICLE_KEYWORDS.items()}
+
+
 def detect_vehicles(text: str) -> set[str]:
     low = nfc(text).lower()
-    folded = remove_diacritics(low)
+    # "xe máy chuyên dùng" là máy kéo/xe chuyên dùng, không phải xe máy
+    low_moto = low.replace("xe máy chuyên dùng", " ").replace("xe may chuyen dung", " ")
     found = set()
-    for vtype, kws in VEHICLE_KEYWORDS.items():
-        for kw in kws:
-            if kw in low or remove_diacritics(kw) in folded:
-                found.add(vtype)
-                break
-    # "xe máy chuyên dùng" chứa "xe máy" -> không tính là moto
-    if "tractor" in found and "moto" in found and "xe máy chuyên dùng" in low and "mô tô" not in low:
-        found.discard("moto")
+    for vtype, pat in _PATTERNS.items():
+        target = low_moto if vtype == "moto" else low
+        if pat.search(target):
+            found.add(vtype)
     return found
 
 

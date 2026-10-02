@@ -17,6 +17,9 @@ def test_detect_vehicles():
     assert detect_vehicles("xe may vuot den do") == {"moto"}
     assert detect_vehicles("Ô tô đỗ trên cao tốc") == {"oto"}
     assert detect_vehicles("vượt đèn đỏ") == set()
+    # "ô tô" nằm trong "mô tô" -> phải so theo ranh giới từ
+    assert detect_vehicles("Điều 7. Xử phạt người điều khiển xe mô tô, xe gắn máy") == {"moto"}
+    assert detect_vehicles("người điều khiển xe máy chuyên dùng") == {"tractor"}
 
 
 def test_vehicle_penalty():

@@ -11,6 +11,7 @@ from pathlib import Path
 
 from .bm25 import BM25
 from .fusion import rrf
+from .glossary import expand
 from .parse import Chunk, build_backrefs
 from .text import has_diacritics, tokenize
 from .validity import DocMeta, effective_doc_ids
@@ -26,8 +27,9 @@ class SearchConfig:
     vehicle_aware: bool = True
     expand_refs: bool = True
     restore_diacritics: bool = True  # chỉ có tác dụng khi truyền restorer (dự án vi-diacritics-transformer)
+    expand_glossary: bool = True  # "vượt đèn đỏ" -> thêm "không chấp hành hiệu lệnh của đèn tín hiệu"
     n_candidates: int = 50
-    n_rerank: int = 20
+    n_rerank: int = 12  # 20 cặp mất ~1.3s trên Ryzen 5 5625U, 12 cặp ~0.7s mà recall gần như không đổi
     max_expanded: int = 3
 
 
@@ -83,6 +85,10 @@ class Retriever:
         if cfg.restore_diacritics and self.restorer and not has_diacritics(query):
             q = self.restorer(query)
             debug["restored"] = q
+        if cfg.expand_glossary:
+            q, added = expand(q)
+            if added:
+                debug["expanded"] = added
 
         allowed = self._allowed(as_of, cfg.use_validity)
         rankings: list[list[int]] = []

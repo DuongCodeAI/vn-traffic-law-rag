@@ -19,7 +19,8 @@ from ..validity import load_sources
 from .metrics import complete_at_k, mrr, recall_at_k
 
 OFF = SearchConfig(use_dense=False, use_rerank=False, vehicle_aware=False, expand_refs=False,
-                   use_validity=False, restore_diacritics=False)
+                   use_validity=False, restore_diacritics=False, expand_glossary=False)
+_FULL_NO_RESTORE = SearchConfig(restore_diacritics=False)
 
 CONFIGS: dict[str, SearchConfig] = {
     "bm25": OFF,
@@ -28,8 +29,11 @@ CONFIGS: dict[str, SearchConfig] = {
     "+rerank": replace(OFF, use_dense=True, use_rerank=True),
     "+validity": replace(OFF, use_dense=True, use_rerank=True, use_validity=True),
     "+vehicle": replace(OFF, use_dense=True, use_rerank=True, use_validity=True, vehicle_aware=True),
-    "+refexp (full)": SearchConfig(restore_diacritics=False),
+    "+glossary": replace(_FULL_NO_RESTORE, expand_refs=False),
+    "+refexp (full)": _FULL_NO_RESTORE,
     "full +restore": SearchConfig(),
+    # các biến thể rẻ (không cần model) để so trong CI
+    "bm25+glossary": replace(OFF, expand_glossary=True),
 }
 
 

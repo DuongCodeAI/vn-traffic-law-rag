@@ -81,6 +81,11 @@ rag.lookup_sign("P.131a", vehicle="ô tô")   # biển báo -> điều khoản x
 
 Đánh giá lại: `python -m vnlaw_rag.eval.run_eval --dense-dir data/processed/dense --dense-backend onnx --dense-model models/embedder --reranker models/reranker --reranker-backend onnx`
 
+Dựng lại index + ablation: `notebooks/01_build_index_eval` (Kaggle hoặc Colab, CPU là đủ).
+Chạy trên Colab: mở notebook từ GitHub (File → Open notebook → GitHub → DuongCodeAI/vn-traffic-law-rag), runtime CPU,
+thêm Secrets `GEMINI_API_KEY`, `GROQ_API_KEY`, `HF_TOKEN` (biểu tượng chìa khoá, bật Notebook access).
+Notebook tự clone code, kết quả lưu vào Google Drive (`MyDrive/ai-portfolio/vn-traffic-law-rag`).
+
 ## Hạn chế
 
 - Luật 118/2025/QH15 sửa ~20 điều của Luật 36 (hiệu lực 01/07/2026) nhưng vbpl chưa cập nhật bản hợp nhất.

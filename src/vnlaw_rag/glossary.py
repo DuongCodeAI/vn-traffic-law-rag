@@ -25,8 +25,10 @@ GLOSSARY: list[tuple[list[str], str]] = [
      "không mang theo chứng nhận đăng ký xe"),
     (["không mũ", "không đội mũ", "không nón bảo hiểm", "không đội nón"],
      "không đội mũ bảo hiểm cho người đi mô tô, xe máy"),
-    (["chở ba", "chở 3", "kẹp ba", "kẹp 3"],
-     "chở theo từ 02 người trở lên trên xe"),
+    # "chở ba" = 3 người trên xe tính cả người lái -> luật ghi "chở theo 02 người"
+    (["chở ba", "chở 3", "kẹp ba", "kẹp 3", "chở hai người", "chở 2 người"],
+     "chở theo 02 người trên xe"),
+    (["chở bốn", "chở 4", "kẹp bốn", "kẹp 4"], "chở theo từ 03 người trở lên trên xe"),
     (["lấn làn", "đi sai làn", "sai làn", "chạy sai làn"],
      "đi không đúng phần đường hoặc làn đường quy định"),
     (["quá tốc độ", "chạy nhanh quá", "vượt tốc độ"],

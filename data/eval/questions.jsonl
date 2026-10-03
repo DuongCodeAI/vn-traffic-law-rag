@@ -1,0 +1,61 @@
+{"id": "s001", "question": "xe máy vượt đèn đỏ bị phạt bao nhiêu tiền", "gold": ["nd168-2024/d7/k7/c"], "gold_extra": ["nd168-2024/d7/k13/b"], "type": "colloquial", "reviewed": true}
+{"id": "s001n", "question": "xe may vuot den do bi phat bao nhieu tien", "gold": ["nd168-2024/d7/k7/c"], "gold_extra": ["nd168-2024/d7/k13/b"], "type": "no_diacritics", "reviewed": true}
+{"id": "s002", "question": "lái ô tô vượt đèn đỏ thì bị phạt thế nào", "gold": ["nd168-2024/d6/k9/b"], "gold_extra": ["nd168-2024/d6/k16/b"], "type": "colloquial", "reviewed": true}
+{"id": "s002n", "question": "lai o to vuot den do thi bi phat the nao", "gold": ["nd168-2024/d6/k9/b"], "gold_extra": ["nd168-2024/d6/k16/b"], "type": "no_diacritics", "reviewed": true}
+{"id": "s003", "question": "đi xe máy không đội mũ bảo hiểm phạt bao nhiêu", "gold": ["nd168-2024/d7/k2/h", "nd168-2024/d7/k2/i"], "gold_extra": [], "type": "colloquial", "reviewed": true}
+{"id": "s003n", "question": "di xe may khong doi mu bao hiem phat bao nhieu", "gold": ["nd168-2024/d7/k2/h", "nd168-2024/d7/k2/i"], "gold_extra": [], "type": "no_diacritics", "reviewed": true}
+{"id": "s004", "question": "chở người ngồi sau không đội mũ bảo hiểm có bị phạt không", "gold": ["nd168-2024/d7/k2/i"], "gold_extra": [], "type": "colloquial", "reviewed": true}
+{"id": "s004n", "question": "cho nguoi ngoi sau khong doi mu bao hiem co bi phat khong", "gold": ["nd168-2024/d7/k2/i"], "gold_extra": [], "type": "no_diacritics", "reviewed": true}
+{"id": "s005", "question": "ô tô chạy quá tốc độ 15 km/h phạt bao nhiêu", "gold": ["nd168-2024/d6/k5/đ"], "gold_extra": ["nd168-2024/d6/k16/a"], "type": "colloquial", "reviewed": true}
+{"id": "s005n", "question": "o to chay qua toc do 15 km/h phat bao nhieu", "gold": ["nd168-2024/d6/k5/đ"], "gold_extra": ["nd168-2024/d6/k16/a"], "type": "no_diacritics", "reviewed": true}
+{"id": "s006", "question": "xe máy chạy quá tốc độ 8 km/h", "gold": ["nd168-2024/d7/k2/b"], "gold_extra": [], "type": "colloquial", "reviewed": true}
+{"id": "s006n", "question": "xe may chay qua toc do 8 km/h", "gold": ["nd168-2024/d7/k2/b"], "gold_extra": [], "type": "no_diacritics", "reviewed": true}
+{"id": "s007", "question": "ô tô chạy quá tốc độ hơn 35 km/h bị phạt gì", "gold": ["nd168-2024/d6/k7/a"], "gold_extra": ["nd168-2024/d6/k16/c"], "type": "colloquial", "reviewed": true}
+{"id": "s007n", "question": "o to chay qua toc do hon 35 km/h bi phat gi", "gold": ["nd168-2024/d6/k7/a"], "gold_extra": ["nd168-2024/d6/k16/c"], "type": "no_diacritics", "reviewed": true}
+{"id": "s008", "question": "uống bia rồi chạy xe máy, nồng độ cồn thấp thì phạt sao", "gold": ["nd168-2024/d7/k6/a"], "gold_extra": ["nd168-2024/d7/k13/b"], "type": "colloquial", "reviewed": true}
+{"id": "s008n", "question": "uong bia roi chay xe may, nong do con thap thi phat sao", "gold": ["nd168-2024/d7/k6/a"], "gold_extra": ["nd168-2024/d7/k13/b"], "type": "no_diacritics", "reviewed": true}
+{"id": "s009", "question": "lái ô tô có nồng độ cồn vượt mức 80 miligam", "gold": ["nd168-2024/d6/k11/a"], "gold_extra": ["nd168-2024/d6/k15/c"], "type": "colloquial", "reviewed": true}
+{"id": "s009n", "question": "lai o to co nong do con vuot muc 80 miligam", "gold": ["nd168-2024/d6/k11/a"], "gold_extra": ["nd168-2024/d6/k15/c"], "type": "no_diacritics", "reviewed": true}
+{"id": "s010", "question": "không chịu thổi nồng độ cồn khi bị cảnh sát yêu cầu, xe máy", "gold": ["nd168-2024/d7/k9/đ"], "gold_extra": ["nd168-2024/d7/k12/c"], "type": "colloquial", "reviewed": true}
+{"id": "s010n", "question": "khong chiu thoi nong do con khi bi canh sat yeu cau, xe may", "gold": ["nd168-2024/d7/k9/đ"], "gold_extra": ["nd168-2024/d7/k12/c"], "type": "no_diacritics", "reviewed": true}
+{"id": "s011", "question": "vừa lái xe máy vừa nghe điện thoại", "gold": ["nd168-2024/d7/k4/đ"], "gold_extra": ["nd168-2024/d7/k13/b"], "type": "colloquial", "reviewed": true}
+{"id": "s011n", "question": "vua lai xe may vua nghe dien thoai", "gold": ["nd168-2024/d7/k4/đ"], "gold_extra": ["nd168-2024/d7/k13/b"], "type": "no_diacritics", "reviewed": true}
+{"id": "s012", "question": "lái ô tô dùng điện thoại có bị phạt không", "gold": ["nd168-2024/d6/k5/h"], "gold_extra": ["nd168-2024/d6/k16/b"], "type": "colloquial", "reviewed": true}
+{"id": "s012n", "question": "lai o to dung dien thoai co bi phat khong", "gold": ["nd168-2024/d6/k5/h"], "gold_extra": ["nd168-2024/d6/k16/b"], "type": "no_diacritics", "reviewed": true}
+{"id": "s013", "question": "xe máy chở ba thì bị phạt bao nhiêu", "gold": ["nd168-2024/d7/k2/g"], "gold_extra": [], "type": "colloquial", "reviewed": true}
+{"id": "s013n", "question": "xe may cho ba thi bi phat bao nhieu", "gold": ["nd168-2024/d7/k2/g"], "gold_extra": [], "type": "no_diacritics", "reviewed": true}
+{"id": "s014", "question": "đi xe máy lạng lách đánh võng", "gold": ["nd168-2024/d7/k9/a", "nd168-2024/d7/k11/c"], "gold_extra": ["nd168-2024/d7/k11/c", "nd168-2024/d7/k12/b", "nd168-2024/d7/k12/c"], "type": "colloquial", "reviewed": true}
+{"id": "s014n", "question": "di xe may lang lach danh vong", "gold": ["nd168-2024/d7/k9/a", "nd168-2024/d7/k11/c"], "gold_extra": ["nd168-2024/d7/k11/c", "nd168-2024/d7/k12/b", "nd168-2024/d7/k12/c"], "type": "no_diacritics", "reviewed": true}
+{"id": "s015", "question": "xe máy đi vào đường cao tốc", "gold": ["nd168-2024/d7/k7/b", "nd168-2024/d7/k10/a"], "gold_extra": ["nd168-2024/d7/k13/c", "nd168-2024/d7/k13/d"], "type": "colloquial", "reviewed": true}
+{"id": "s015n", "question": "xe may di vao duong cao toc", "gold": ["nd168-2024/d7/k7/b", "nd168-2024/d7/k10/a"], "gold_extra": ["nd168-2024/d7/k13/c", "nd168-2024/d7/k13/d"], "type": "no_diacritics", "reviewed": true}
+{"id": "s016", "question": "ô tô đi ngược chiều đường một chiều", "gold": ["nd168-2024/d6/k9/d"], "gold_extra": ["nd168-2024/d6/k16/b"], "type": "colloquial", "reviewed": true}
+{"id": "s016n", "question": "o to di nguoc chieu duong mot chieu", "gold": ["nd168-2024/d6/k9/d"], "gold_extra": ["nd168-2024/d6/k16/b"], "type": "no_diacritics", "reviewed": true}
+{"id": "s017", "question": "xe máy đi ngược chiều", "gold": ["nd168-2024/d7/k7/a", "nd168-2024/d7/k10/a"], "gold_extra": ["nd168-2024/d7/k13/a", "nd168-2024/d7/k13/d"], "type": "colloquial", "reviewed": true}
+{"id": "s017n", "question": "xe may di nguoc chieu", "gold": ["nd168-2024/d7/k7/a", "nd168-2024/d7/k10/a"], "gold_extra": ["nd168-2024/d7/k13/a", "nd168-2024/d7/k13/d"], "type": "no_diacritics", "reviewed": true}
+{"id": "s018", "question": "không có bằng lái xe máy thì phạt bao nhiêu", "gold": ["nd168-2024/d18/k5/a", "nd168-2024/d18/k7/b", "nd168-2024/d18/k9/b"], "gold_extra": ["nd168-2024/d18/k10"], "type": "colloquial", "reviewed": true}
+{"id": "s018n", "question": "khong co bang lai xe may thi phat bao nhieu", "gold": ["nd168-2024/d18/k5/a", "nd168-2024/d18/k7/b", "nd168-2024/d18/k9/b"], "gold_extra": ["nd168-2024/d18/k10"], "type": "no_diacritics", "reviewed": true}
+{"id": "s019", "question": "quên mang cà vẹt xe máy", "gold": ["nd168-2024/d18/k2/c", "nd168-2024/d18/k3/b"], "gold_extra": [], "type": "colloquial", "reviewed": true}
+{"id": "s019n", "question": "quen mang ca vet xe may", "gold": ["nd168-2024/d18/k2/c", "nd168-2024/d18/k3/b"], "gold_extra": [], "type": "no_diacritics", "reviewed": true}
+{"id": "s020", "question": "ô tô không thắt dây an toàn", "gold": ["nd168-2024/d6/k3/k", "nd168-2024/d6/k3/l"], "gold_extra": [], "type": "colloquial", "reviewed": true}
+{"id": "s020n", "question": "o to khong that day an toan", "gold": ["nd168-2024/d6/k3/k", "nd168-2024/d6/k3/l"], "gold_extra": [], "type": "no_diacritics", "reviewed": true}
+{"id": "s021", "question": "đỗ ô tô chỗ có biển cấm đỗ", "gold": ["nd168-2024/d6/k3/e"], "gold_extra": [], "type": "colloquial", "reviewed": true}
+{"id": "s021n", "question": "do o to cho co bien cam do", "gold": ["nd168-2024/d6/k3/e"], "gold_extra": [], "type": "no_diacritics", "reviewed": true}
+{"id": "s022", "question": "xe máy dừng đỗ trên vỉa hè sai quy định", "gold": ["nd168-2024/d7/k2/d", "nd168-2024/d7/k7/a"], "gold_extra": ["nd168-2024/d7/k13/a"], "type": "colloquial", "reviewed": true}
+{"id": "s022n", "question": "xe may dung do tren via he sai quy dinh", "gold": ["nd168-2024/d7/k2/d", "nd168-2024/d7/k7/a"], "gold_extra": ["nd168-2024/d7/k13/a"], "type": "no_diacritics", "reviewed": true}
+{"id": "s023", "question": "người đi bộ trèo qua dải phân cách", "gold": ["nd168-2024/d10/k1/a"], "gold_extra": [], "type": "colloquial", "reviewed": true}
+{"id": "s023n", "question": "nguoi di bo treo qua dai phan cach", "gold": ["nd168-2024/d10/k1/a"], "gold_extra": [], "type": "no_diacritics", "reviewed": true}
+{"id": "s024", "question": "đi xe đạp dàn hàng ngang", "gold": ["nd168-2024/d9/k1/g"], "gold_extra": [], "type": "colloquial", "reviewed": true}
+{"id": "s024n", "question": "di xe dap dan hang ngang", "gold": ["nd168-2024/d9/k1/g"], "gold_extra": [], "type": "no_diacritics", "reviewed": true}
+{"id": "s025", "question": "ô tô bấm còi lúc nửa đêm trong khu dân cư", "gold": ["nd168-2024/d6/k1/đ"], "gold_extra": [], "type": "colloquial", "reviewed": true}
+{"id": "s025n", "question": "o to bam coi luc nua dem trong khu dan cu", "gold": ["nd168-2024/d6/k1/đ"], "gold_extra": [], "type": "no_diacritics", "reviewed": true}
+{"id": "s026", "question": "gây tai nạn rồi bỏ chạy, lái ô tô", "gold": ["nd168-2024/d6/k4/g", "nd168-2024/d6/k8"], "gold_extra": ["nd168-2024/d6/k16/a", "nd168-2024/d6/k16/c"], "type": "colloquial", "reviewed": true}
+{"id": "s026n", "question": "gay tai nan roi bo chay, lai o to", "gold": ["nd168-2024/d6/k4/g", "nd168-2024/d6/k8"], "gold_extra": ["nd168-2024/d6/k16/a", "nd168-2024/d6/k16/c"], "type": "no_diacritics", "reviewed": true}
+{"id": "s027", "question": "đèn vàng thì có được đi tiếp không", "gold": ["luat36-2024/d11/k4/b"], "gold_extra": [], "type": "colloquial", "reviewed": true}
+{"id": "s027n", "question": "den vang thi co duoc di tiep khong", "gold": ["luat36-2024/d11/k4/b"], "gold_extra": [], "type": "no_diacritics", "reviewed": true}
+{"id": "s028", "question": "trẻ em dưới 10 tuổi có được ngồi ghế trước ô tô không", "gold": ["luat36-2024/d10/k3"], "gold_extra": [], "type": "colloquial", "reviewed": true}
+{"id": "s028n", "question": "tre em duoi 10 tuoi co duoc ngoi ghe truoc o to khong", "gold": ["luat36-2024/d10/k3"], "gold_extra": [], "type": "no_diacritics", "reviewed": true}
+{"id": "s029", "question": "tốc độ tối đa và khoảng cách an toàn giữa hai xe quy định ở đâu", "gold": ["luat36-2024/d12/k1", "luat36-2024/d12/k4"], "gold_extra": [], "type": "colloquial", "reviewed": true}
+{"id": "s029n", "question": "toc do toi da va khoang cach an toan giua hai xe quy dinh o dau", "gold": ["luat36-2024/d12/k1", "luat36-2024/d12/k4"], "gold_extra": [], "type": "no_diacritics", "reviewed": true}
+{"id": "u001", "question": "thủ tục ly hôn đơn phương mất bao lâu", "gold": [], "type": "unanswerable", "reviewed": true}
+{"id": "u002", "question": "giá vé máy bay đi Đà Nẵng tháng này", "gold": [], "type": "unanswerable", "reviewed": true}
+{"id": "u003", "question": "thuế thu nhập cá nhân tính thế nào", "gold": [], "type": "unanswerable", "reviewed": true}

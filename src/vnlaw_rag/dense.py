@@ -106,4 +106,8 @@ class DenseIndex:
             cfg.backend = backend_override
         if onnx_file:
             cfg.onnx_file = onnx_file
+        if cfg.backend == "onnx" and not (Path(cfg.model_name) / cfg.onnx_file).exists():
+            found = sorted(Path(cfg.model_name).glob("*.onnx"))
+            if found:
+                cfg.onnx_file = found[0].name
         return cls(np.load(folder / "vectors.npy"), Embedder(cfg, device=device, threads=threads))

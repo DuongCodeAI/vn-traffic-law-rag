@@ -5,12 +5,12 @@
   {"code": "P.104", "name": "Cấm xe mô tô và xe máy", "query": "xe mô tô xe gắn máy đi vào đường có biển cấm, không chấp hành biển báo hiệu"},
   {"code": "P.106A", "name": "Cấm xe ô tô tải", "query": "xe ô tô tải đi vào đường có biển cấm xe tải"},
   {"code": "P.112", "name": "Cấm người đi bộ", "query": "người đi bộ đi vào khu vực cấm đi bộ"},
-  {"code": "P.117", "name": "Hạn chế chiều cao", "query": "điều khiển xe vượt quá chiều cao cho phép của biển hạn chế chiều cao"},
+  {"code": "P.117", "name": "Hạn chế chiều cao", "query": "điều khiển xe vượt quá chiều cao cho phép của biển hạn chế chiều cao", "speak_fine": false},
   {"code": "P.123A", "name": "Cấm rẽ trái", "query": "rẽ trái tại nơi có biển báo hiệu có nội dung cấm rẽ trái đối với loại phương tiện đang điều khiển"},
   {"code": "P.123B", "name": "Cấm rẽ phải", "query": "rẽ phải tại nơi có biển báo hiệu có nội dung cấm rẽ phải đối với loại phương tiện đang điều khiển"},
   {"code": "P.124A", "name": "Cấm quay đầu xe", "query": "quay đầu xe tại nơi có biển báo hiệu có nội dung cấm quay đầu đối với loại phương tiện đang điều khiển"},
   {"code": "P.125", "name": "Cấm vượt", "query": "vượt xe tại nơi có biển báo hiệu cấm vượt"},
-  {"code": "P.127", "name": "Tốc độ tối đa cho phép", "query": "điều khiển xe chạy quá tốc độ quy định"},
+  {"code": "P.127", "name": "Tốc độ tối đa cho phép", "query": "điều khiển xe chạy quá tốc độ quy định", "speak_fine": false},
   {"code": "P.128", "name": "Cấm sử dụng còi", "query": "sử dụng còi tại nơi có biển cấm sử dụng còi"},
   {"code": "P.130", "name": "Cấm dừng xe và đỗ xe", "query": "dừng xe, đỗ xe tại nơi có biển “Cấm dừng xe và đỗ xe”"},
   {"code": "P.131A", "name": "Cấm đỗ xe", "query": "đỗ xe nơi có biển “Cấm đỗ xe” hoặc biển “Cấm dừng xe và đỗ xe”"},
@@ -21,5 +21,5 @@
   {"code": "R.411", "name": "Hướng đi trên mỗi làn đường theo vạch kẻ đường", "query": "đi không đúng làn đường theo hướng đi quy định của biển báo"},
   {"code": "W.208", "name": "Giao nhau với đường ưu tiên", "query": "không nhường đường cho xe đi trên đường ưu tiên tại nơi giao nhau"},
   {"code": "W.224", "name": "Đường người đi bộ cắt ngang", "query": "không nhường đường cho người đi bộ tại nơi có vạch kẻ đường dành cho người đi bộ"},
-  {"code": "W.245A", "name": "Đi chậm", "query": "không giảm tốc độ, đi chậm theo biển báo hiệu"}
+  {"code": "W.245A", "name": "Đi chậm", "query": "không giảm tốc độ, đi chậm theo biển báo hiệu", "speak_fine": false}
 ]

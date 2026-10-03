@@ -25,6 +25,7 @@ class SignInfo:
     name: str
     hits: list[Hit]
     query: str
+    speak_fine: bool = True  # False: mức phạt tuỳ tình huống (biển tốc độ: quá 5 hay 35 km/h) -> đừng đọc 1 con số
 
 
 class LawRAG:
@@ -81,4 +82,5 @@ class LawRAG:
         if s is None:
             return None
         q = s["query"] + (f" {vehicle}" if vehicle else "")
-        return SignInfo(code=s["code"], name=s["name"], hits=self.search(q, k=k), query=q)
+        return SignInfo(code=s["code"], name=s["name"], hits=self.search(q, k=k), query=q,
+                        speak_fine=s.get("speak_fine", True))

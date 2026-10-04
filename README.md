@@ -43,6 +43,22 @@ Những gì mình rút ra (chi tiết trong [NOTES.md](NOTES.md)):
   chỉ ghi "thực hiện hành vi quy định tại điểm c khoản 7 Điều này".
 - Bộ eval còn nhỏ, các số trên để so sánh tương đối giữa các config, không phải con số tuyệt đối.
 
+**Câu hỏi gõ không dấu: có nên thêm dấu trước khi tìm?** (29 câu không dấu, config full, laptop, 04/10/2026;
+model thêm dấu là tagger int8 của [vi-diacritics-transformer](https://github.com/DuongCodeAI/vi-diacritics-transformer))
+
+| đầu vào | recall@1 | recall@5 | MRR | complete | ms/câu |
+|---|---|---|---|---|---|
+| câu có dấu gốc (trần) | 0.655 | 0.897 | 0.753 | 0.862 | 785 |
+| không dấu, BM25 trên bản bỏ dấu (mặc định) | 0.310 | **0.828** | 0.497 | **0.759** | 1001 |
+| không dấu → thêm dấu → tìm | 0.517 | 0.724 | 0.590 | 0.621 | 722 |
+| tìm cả 2 bản, ghép bằng RRF | **0.552** | **0.828** | **0.651** | 0.724 | 1768 |
+
+- Thêm dấu đẩy đáp án đúng lên đầu (recall@1 0.31 → 0.52) nhưng làm **rơi** đáp án khỏi top 5 (0.83 → 0.72):
+  model thêm dấu học từ Wikipedia nên sai đúng các từ quan trọng ("phạt" → "phát", "đèn đỏ" → "đến do").
+  Một từ sai dấu thì BM25 bản có dấu không khớp được nữa, còn bản bỏ dấu thì không bị ảnh hưởng.
+- Ghép cả 2 bản giữ được recall@5 và MRR tốt nhất, đổi lại gấp đôi thời gian (rerank 2 lần).
+- Vì vậy mặc định **không** thêm dấu trước khi tìm luật. Script đo: `scripts/eval_restorer.py`.
+
 ## Cách hoạt động
 
 ```
@@ -79,7 +95,7 @@ rag.search("xe may vuot den do")
 rag.lookup_sign("P.131a", vehicle="ô tô")   # biển báo -> điều khoản xử phạt (dùng trong viet-copilot)
 ```
 
-Đánh giá lại: `python -m vnlaw_rag.eval.run_eval --dense-dir data/processed/dense --dense-backend onnx --dense-model models/embedder --reranker models/reranker --reranker-backend onnx`
+Đánh giá lại: `python -m vnlaw_rag.eval.run_eval --dense-dir data/processed/dense --dense-backend onnx --dense-model models/embedder --reranker models/reranker --reranker-backend onnx --reranker-onnx-file model_quint8_avx2.onnx`
 
 Dựng lại index + ablation: `notebooks/01_build_index_eval` (Kaggle hoặc Colab, CPU là đủ).
 Chạy trên Colab: mở notebook từ GitHub (File → Open notebook → GitHub → DuongCodeAI/vn-traffic-law-rag), runtime CPU,

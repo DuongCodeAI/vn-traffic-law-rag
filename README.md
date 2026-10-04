@@ -1,5 +1,14 @@
 # vn-traffic-law-rag
 
+<!-- intro -->
+<p align="left">
+<img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"> <img src="https://img.shields.io/badge/RAG-FF6F00?style=for-the-badge" alt="RAG"> <img src="https://img.shields.io/badge/BM25%20+%20Dense%20+%20RRF-8E44AD?style=for-the-badge" alt="BM25 + Dense + RRF"> <img src="https://img.shields.io/badge/ONNX%20Runtime-005CED?style=for-the-badge&logo=onnx&logoColor=white" alt="ONNX Runtime"> <img src="https://img.shields.io/badge/CPU%20only-2ECC71?style=for-the-badge" alt="CPU only">
+</p>
+
+> **RAG tra luật giao thông.** Hỏi đáp NĐ 168/2024 + Luật 36/2024, trích dẫn tới Điểm/Khoản/Điều. BM25 + vector + RRF + rerank ONNX trên CPU. Bộ eval tự làm 61 câu: recall@5 **0.86** (BM25 đơn thuần 0.74); riêng bảng từ đời thường → ngôn ngữ luật nâng 0.64 → 0.86, mở rộng tham chiếu nâng tỉ lệ "lấy đủ mức phạt + trừ điểm" 0.36 → 0.81. Đo ra embedding e5-small thua BM25 trên văn bản luật, và thêm dấu trước khi tìm làm recall@5 tụt (0.83 → 0.72), nên cả hai không bật mặc định.
+
+> Một phần của bộ 5 dự án [Trợ lý lái xe tiếng Việt chạy offline](https://github.com/DuongCodeAI) · tác giả: Tiến Dương
+
 Hỏi đáp Luật Giao thông Việt Nam có trích dẫn tới từng **Điểm / Khoản / Điều**, chạy được trên laptop không GPU.
 
 ```

@@ -1,12 +1,13 @@
 """Chạy lúc Space khởi động: tải index + model ONNX từ HF Hub, metadata từ GitHub."""
 
+import os
 import shutil
 import urllib.request
 from pathlib import Path
 
 from huggingface_hub import snapshot_download
 
-REPO = "DuongCodeAI/vn-traffic-law-rag-index"
+REPO = f"{os.environ.get('HF_USER', 'hgdkakhs')}/vn-traffic-law-rag-index"
 GH = "https://raw.githubusercontent.com/DuongCodeAI/vn-traffic-law-rag/main/data"
 
 p = Path(snapshot_download(REPO, allow_patterns=["models/*", "processed/dense/*", "processed/chunks.jsonl"]))

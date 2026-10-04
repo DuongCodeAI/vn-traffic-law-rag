@@ -75,6 +75,10 @@ câu hỏi ─► (thêm dấu nếu gõ không dấu) ─► từ điển đờ
 - **Nhãn sửa đổi từ vbpl**: khoản "được sửa đổi, bổ sung" ghi rõ trong trích dẫn; khoản "bãi bỏ" bị loại.
 - **Kiểm tra số liệu**: LLM hay nhớ nhầm mức phạt của NĐ 100 cũ; mọi số tiền trong câu trả lời phải xuất
   hiện trong đoạn luật được trích, không thì gắn cảnh báo.
+- **Biển báo → mức phạt** (`data/sign_map.json`, dùng cho cảnh báo trong viet-copilot): 44/52 mã biển của dataset
+  VNTS. Biển cấm/hiệu lệnh ghim thẳng điểm luật NĐ 168 theo loại xe, soát tay từng điểm, không qua tìm kiếm:
+  tìm kiếm từng trả "cấm ô tô" → phạt xe máy 10–14 triệu (khoản gây tai nạn). Biển không áp dụng cho loại xe
+  đang lái (P.103a với xe máy) hay biển cảnh báo W.* thì chỉ đọc tên biển, không đọc số tiền.
 - **Không cần torch khi chạy**: embedding và reranker chạy bằng onnxruntime (~240MB model).
 
 ## Chạy thử

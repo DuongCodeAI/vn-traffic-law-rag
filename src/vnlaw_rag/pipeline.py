@@ -77,10 +77,44 @@ class LawRAG:
         return answer(query, self.search(query, k=k, as_of=as_of), self.llm)
 
     def lookup_sign(self, code: str, vehicle: str | None = None, k: int = 3) -> SignInfo | None:
-        """Biển báo -> điều khoản xử phạt. vehicle: 'ô tô' / 'xe máy' để lấy đúng Điều."""
-        s = self.sign_map.get(code.upper())
+        """Biển báo -> điều khoản xử phạt. vehicle: 'ô tô' / 'xe máy' để lấy đúng Điều.
+
+        Mã từ detector có thể kèm hậu tố sau dấu '*' (VNTS: "P.127*50", "P.124a*", "P.106a*Xe tải").
+        Biển có trường "fine" thì lấy thẳng điểm luật đã soát tay theo loại xe; không tìm kiếm, vì
+        cảnh báo phải đúng số tiền. null = biển không áp dụng cho loại xe đó -> chỉ báo tên biển.
+        """
+        base, _, suffix = code.strip().partition("*")
+        s = self.sign_map.get(base.upper())
         if s is None:
             return None
+        name = s["name"]
+        if suffix.isdigit() and s.get("unit"):
+            name = f"{name} {suffix} {s['unit']}"
+        veh = _vehicle_key(vehicle)
+        if "fine" in s and veh in s["fine"]:
+            cid = s["fine"][veh]
+            if cid is None:
+                return SignInfo(code=s["code"], name=name, hits=[], query="", speak_fine=False)
+            return SignInfo(code=s["code"], name=name, hits=self._pinned(cid), query=cid,
+                            speak_fine=s.get("speak_fine", True))
+        if not s.get("query"):  # biển cảnh báo/chỉ dẫn: không có hành vi bị phạt riêng
+            return SignInfo(code=s["code"], name=name, hits=[], query="", speak_fine=False)
         q = s["query"] + (f" {vehicle}" if vehicle else "")
-        return SignInfo(code=s["code"], name=s["name"], hits=self.search(q, k=k), query=q,
+        return SignInfo(code=s["code"], name=name, hits=self.search(q, k=k), query=q,
                         speak_fine=s.get("speak_fine", True))
+
+    def _pinned(self, cid: str) -> list[Hit]:
+        r = self.retriever
+        hits = [Hit(r.chunks[r.id2idx[cid]], 1.0)]
+        # kéo theo khoản trừ điểm / tước bằng trỏ về điểm này, giống expand_refs khi tìm kiếm
+        hits += [Hit(r.chunks[r.id2idx[x]], 0.0, expanded_from=cid) for x in r.backrefs.get(cid, []) if x in r.id2idx]
+        return hits
+
+
+def _vehicle_key(vehicle: str | None) -> str | None:
+    if not vehicle:
+        return None
+    v = vehicle.lower()
+    if "máy" in v or "mô tô" in v:
+        return "xe máy"
+    return "ô tô" if "ô tô" in v else None

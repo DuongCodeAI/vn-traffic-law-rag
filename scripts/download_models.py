@@ -1,4 +1,4 @@
-"""Tải index + model ONNX đã build trên Kaggle từ HF Hub về máy (~250MB).
+"""Tải index + model ONNX đã build sẵn (prepare_local_models.py) từ HF Hub về máy (~260MB).
 
 python scripts/download_models.py --repo hgdkakhs/vn-traffic-law-rag-index
 """

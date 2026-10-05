@@ -119,6 +119,7 @@ model thêm dấu là tagger int8 của [vi-diacritics-transformer](https://gith
 ```bash
 pip install -e ".[onnx,api]"
 python scripts/prepare_local_models.py   # tải + quantize model, embed corpus (~2 phút)
+# hoặc tải index + model đã build sẵn (~260MB) từ HF: python scripts/download_models.py
 cp .env.example .env                     # điền GEMINI_API_KEY / GROQ_API_KEY (tuỳ chọn)
 uvicorn vnlaw_rag.api:app --port 8000    # mở http://localhost:8000
 ```
@@ -144,7 +145,8 @@ Test: `pip install -e ".[dev]" && pytest -q` (CI chạy ruff + pytest mỗi lầ
 Dựng lại index + ablation trên Colab: `notebooks/01_build_index_eval` (CPU là đủ). Mở notebook từ GitHub
 (File → Open notebook → GitHub → DuongCodeAI/vn-traffic-law-rag), thêm Secrets `GEMINI_API_KEY`, `GROQ_API_KEY`,
 `HF_TOKEN` (biểu tượng chìa khoá, bật Notebook access). Notebook tự clone code, kết quả lưu vào Google Drive
-(`MyDrive/ai-portfolio/vn-traffic-law-rag`). `space/` là Dockerfile cho HF Space (chưa deploy).
+(`MyDrive/ai-portfolio/vn-traffic-law-rag`). Index + model ONNX đã build: [hgdkakhs/vn-traffic-law-rag-index](https://huggingface.co/hgdkakhs/vn-traffic-law-rag-index).
+`space/` là Dockerfile cho HF Space (chưa deploy: Space Docker trên CPU miễn phí giờ cần tài khoản HF PRO).
 
 ## Hạn chế
 

@@ -37,7 +37,7 @@ Ghi lại vì sao chọn cách này, cái gì đã thử và thất bại.
 - **e5-small ONNX int8**: bản int8 có sẵn trên HF là avx512_vnni, CPU AMD Zen 3 không chạy được → tự quantize
   dynamic uint8 (118MB). Embed 1.686 chunk mất 78s trên laptop.
 - Kết quả bất ngờ: dense e5-small recall@5 chỉ 0.28, thua BM25 (0.74). Đoán: model đa ngữ nhỏ, chưa thấy văn
-  phong luật Việt; câu hỏi đời thường còn xa văn bản luật hơn nữa. Việc tiếp: so với bkai bi-encoder trên Kaggle,
+  phong luật Việt; câu hỏi đời thường còn xa văn bản luật hơn nữa. Việc tiếp: so với bkai bi-encoder (cần GPU Colab),
   và thử fine-tune e5 bằng cặp (câu hỏi, điều khoản) sinh từ LLM.
 - Reranker mmarco-mMiniLMv2 quint8_avx2: 20 cặp ~1.3s, 12 cặp ~0.6-1s trên laptop. Giữ 12.
 

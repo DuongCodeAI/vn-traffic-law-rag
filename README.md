@@ -1,15 +1,37 @@
 # vn-traffic-law-rag
 
-<!-- intro -->
+[![ci](https://github.com/DuongCodeAI/vn-traffic-law-rag/actions/workflows/ci.yml/badge.svg)](https://github.com/DuongCodeAI/vn-traffic-law-rag/actions/workflows/ci.yml)
+[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+![python](https://img.shields.io/badge/python-3.10%2B-3776AB)
+
 <p align="left">
 <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"> <img src="https://img.shields.io/badge/RAG-FF6F00?style=for-the-badge" alt="RAG"> <img src="https://img.shields.io/badge/BM25%20+%20Dense%20+%20RRF-8E44AD?style=for-the-badge" alt="BM25 + Dense + RRF"> <img src="https://img.shields.io/badge/ONNX%20Runtime-005CED?style=for-the-badge&logo=onnx&logoColor=white" alt="ONNX Runtime"> <img src="https://img.shields.io/badge/CPU%20only-2ECC71?style=for-the-badge" alt="CPU only">
 </p>
 
-> **RAG tra luật giao thông.** Hỏi đáp NĐ 168/2024 + Luật 36/2024, trích dẫn tới Điểm/Khoản/Điều. BM25 + vector + RRF + rerank ONNX trên CPU. Bộ eval tự làm 61 câu: recall@5 **0.86** (BM25 đơn thuần 0.74); riêng bảng từ đời thường → ngôn ngữ luật nâng 0.64 → 0.86, mở rộng tham chiếu nâng tỉ lệ "lấy đủ mức phạt + trừ điểm" 0.36 → 0.81. Đo ra embedding e5-small thua BM25 trên văn bản luật, và thêm dấu trước khi tìm làm recall@5 tụt (0.83 → 0.72), nên cả hai không bật mặc định.
+Hỏi đáp **Luật Giao thông Việt Nam** có trích dẫn tới từng **Điểm / Khoản / Điều**, chạy được trên laptop không GPU.
 
-> Một phần của bộ 5 dự án [Trợ lý lái xe tiếng Việt chạy offline](https://github.com/DuongCodeAI) · tác giả: Tiến Dương
+> **English summary.** Hybrid RAG (BM25 + dense + RRF + ONNX cross-encoder rerank) over Vietnamese traffic law
+> (Decree 168/2024, Law 36/2024), citing down to point/clause/article, CPU-only. On a hand-built 61-question eval set,
+> recall@5 is 0.86 vs 0.74 for plain BM25. The biggest single gain came from a ~20-line colloquial → legal-term glossary,
+> not from a bigger model; a multilingual embedding (e5-small) actually lost to BM25 on legal text.
 
-Hỏi đáp Luật Giao thông Việt Nam có trích dẫn tới từng **Điểm / Khoản / Điều**, chạy được trên laptop không GPU.
+Một phần của bộ 5 dự án [Trợ lý lái xe tiếng Việt chạy offline](https://github.com/DuongCodeAI) · tác giả: Tiến Dương.
+Đây là phần "bộ não pháp luật" của [viet-copilot](https://github.com/DuongCodeAI/viet-copilot).
+
+## Kết quả chính
+
+| | kết quả | so với |
+|---|---|---|
+| recall@5 (config đầy đủ) | **0.862** | BM25 đơn thuần 0.741 |
+| tỉ lệ lấy **đủ** điều khoản (mức phạt + trừ điểm) | **0.810** | trước khi mở rộng tham chiếu 0.362 |
+| từ điển đời thường → luật (~20 dòng) | recall@5 0.638 → **0.862** | lớn hơn mọi thay đổi về model |
+| embedding e5-small | recall@5 0.276 | **thua** BM25, nên không bật mặc định |
+| thêm dấu trước khi tìm (câu gõ không dấu) | recall@5 0.828 → 0.724 | **tụt**, nên không bật mặc định |
+| tốc độ | ~1 s/câu (CPU, có rerank) | 9 ms nếu chỉ BM25 + từ điển |
+
+Số đo trên laptop Ryzen 5 5625U, model ONNX int8. Bộ eval còn nhỏ, các số dùng để so sánh tương đối giữa các config.
+
+## Ví dụ
 
 ```
 hỏi: xe máy vượt đèn đỏ phạt bao nhiêu?
@@ -20,15 +42,39 @@ hỏi: xe máy vượt đèn đỏ phạt bao nhiêu?
 Dữ liệu: Nghị định 168/2024/NĐ-CP (bản hợp nhất trên vbpl.vn, đã gồm sửa đổi của NĐ 238/2026 và NĐ 336/2025)
 và Luật Trật tự, an toàn giao thông đường bộ 36/2024/QH15. Snapshot ngày 02/10/2026.
 
-Đây là phần "bộ não pháp luật" của [viet-copilot](https://github.com/DuongCodeAI/viet-copilot).
+## Cách hoạt động
 
-## Kết quả
+```
+câu hỏi ─► (thêm dấu nếu gõ không dấu) ─► từ điển đời thường → luật
+        ─► lọc văn bản/điều khoản còn hiệu lực
+        ─► BM25 (+ bản bỏ dấu) ┐
+        ─► vector e5 (ONNX)    ┴► RRF ─► cross-encoder rerank ─► phạt lệch loại xe
+        ─► kéo theo khoản "trừ điểm / tước bằng" trỏ ngược về hành vi ─► LLM trả lời + trích dẫn
+        ─► kiểm tra mọi số tiền/số điểm trong câu trả lời có trong đoạn được trích
+```
+
+- **Chunk theo cấu trúc luật**, không theo số ký tự: mỗi chunk cấp điểm = tiêu đề Điều + câu dẫn Khoản
+  (chứa mức phạt) + nội dung Điểm. Cắt theo ký tự thì hành vi bị tách khỏi mức phạt.
+- **Nhãn sửa đổi từ vbpl**: khoản "được sửa đổi, bổ sung" ghi rõ trong trích dẫn; khoản "bãi bỏ" bị loại.
+- **Mở rộng tham chiếu**: phần trừ điểm GPLX luôn nằm ở khoản khác, chỉ ghi "thực hiện hành vi quy định tại
+  điểm c khoản 7 Điều này", nên phải đi ngược tham chiếu để lấy đủ.
+- **Kiểm tra số liệu**: LLM hay nhớ nhầm mức phạt của NĐ 100 cũ; mọi số tiền trong câu trả lời phải xuất
+  hiện trong đoạn luật được trích, không thì gắn cảnh báo.
+- **Biển báo → mức phạt** (`data/sign_map.json`, dùng cho cảnh báo trong viet-copilot): 44/52 mã biển của dataset
+  VNTS. Biển cấm/hiệu lệnh ghim thẳng điểm luật NĐ 168 theo loại xe, soát tay từng điểm, không qua tìm kiếm:
+  tìm kiếm từng trả "cấm ô tô" → phạt xe máy 10–14 triệu (khoản gây tai nạn). Biển không áp dụng cho loại xe
+  đang lái (P.103a với xe máy) hay biển cảnh báo W.* thì chỉ đọc tên biển, không đọc số tiền.
+- **Không cần torch khi chạy**: embedding và reranker chạy bằng onnxruntime (~240MB model).
+
+Lý do của từng lựa chọn và các lỗi đã gặp: [NOTES.md](NOTES.md).
+
+## Kết quả chi tiết
 
 Bộ eval tự làm: 29 câu hỏi kiểu người dân hỏi + 29 bản gõ không dấu tương ứng + 3 câu ngoài phạm vi.
 Đáp án (id điều khoản) tìm bằng cụm từ chính xác trong luật rồi kiểm tra tay, không dùng retriever để tạo đáp án.
 "complete" = lấy được **đủ** các điều khoản cần (vd. vừa mức phạt vừa khoản trừ điểm GPLX).
 
-Đo trên laptop Ryzen 5 5625U, không GPU, model ONNX int8:
+**Ablation** (laptop Ryzen 5 5625U, không GPU, model ONNX int8; `results/retrieval_laptop.md`):
 
 | config | recall@1 | recall@5 | MRR | complete | ms/câu |
 |---|---|---|---|---|---|
@@ -42,15 +88,15 @@ Bộ eval tự làm: 29 câu hỏi kiểu người dân hỏi + 29 bản gõ kh�
 | + mở rộng tham chiếu (full) | **0.483** | **0.862** | **0.625** | **0.810** | 1003 |
 | BM25 + từ điển (không model) | 0.224 | 0.862 | 0.447 | 0.414 | 9 |
 
-Những gì mình rút ra (chi tiết trong [NOTES.md](NOTES.md)):
+Rút ra:
 
 - **e5-small yếu với văn bản luật tiếng Việt**, thua cả BM25, và ghép vào hybrid còn kéo tụt kết quả.
-  Sẽ thử embedding chuyên tiếng Việt (bkai) trên Kaggle.
+  Chưa thử embedding chuyên tiếng Việt (vd. bkai bi-encoder) hay fine-tune e5 bằng cặp (câu hỏi, điều khoản).
 - **Lỗi lớn nhất là khoảng cách từ vựng**: người dân nói "vượt đèn đỏ", luật viết "không chấp hành hiệu lệnh
   của đèn tín hiệu giao thông". Một bảng ~20 dòng tự soạn tăng recall@5 từ 0.64 lên 0.86.
-- **Mở rộng tham chiếu** nâng "complete" từ 0.36 lên 0.81: phần trừ điểm GPLX luôn nằm ở khoản khác,
-  chỉ ghi "thực hiện hành vi quy định tại điểm c khoản 7 Điều này".
-- Bộ eval còn nhỏ, các số trên để so sánh tương đối giữa các config, không phải con số tuyệt đối.
+- **Mở rộng tham chiếu** nâng "complete" từ 0.36 lên 0.81.
+- BM25 + từ điển (không model nào) đã đạt cùng recall@5 0.862 với 9 ms/câu; phần model (rerank) chủ yếu đẩy
+  đáp án đúng lên đầu (recall@1 0.224 → 0.483), đổi lại ~1 s/câu.
 
 **Câu hỏi gõ không dấu: có nên thêm dấu trước khi tìm?** (29 câu không dấu, config full, laptop, 04/10/2026;
 model thêm dấu là tagger int8 của [vi-diacritics-transformer](https://github.com/DuongCodeAI/vi-diacritics-transformer))
@@ -68,34 +114,12 @@ model thêm dấu là tagger int8 của [vi-diacritics-transformer](https://gith
 - Ghép cả 2 bản giữ được recall@5 và MRR tốt nhất, đổi lại gấp đôi thời gian (rerank 2 lần).
 - Vì vậy mặc định **không** thêm dấu trước khi tìm luật. Script đo: `scripts/eval_restorer.py`.
 
-## Cách hoạt động
-
-```
-câu hỏi ─► (thêm dấu nếu gõ không dấu) ─► từ điển đời thường → luật
-        ─► lọc văn bản/điều khoản còn hiệu lực
-        ─► BM25 (+ bản bỏ dấu) ┐
-        ─► vector e5 (ONNX)    ┴► RRF ─► cross-encoder rerank ─► phạt lệch loại xe
-        ─► kéo theo khoản "trừ điểm / tước bằng" trỏ ngược về hành vi ─► LLM trả lời + trích dẫn
-        ─► kiểm tra mọi số tiền/số điểm trong câu trả lời có trong đoạn được trích
-```
-
-- **Chunk theo cấu trúc luật**, không theo số ký tự: mỗi chunk cấp điểm = tiêu đề Điều + câu dẫn Khoản
-  (chứa mức phạt) + nội dung Điểm.
-- **Nhãn sửa đổi từ vbpl**: khoản "được sửa đổi, bổ sung" ghi rõ trong trích dẫn; khoản "bãi bỏ" bị loại.
-- **Kiểm tra số liệu**: LLM hay nhớ nhầm mức phạt của NĐ 100 cũ; mọi số tiền trong câu trả lời phải xuất
-  hiện trong đoạn luật được trích, không thì gắn cảnh báo.
-- **Biển báo → mức phạt** (`data/sign_map.json`, dùng cho cảnh báo trong viet-copilot): 44/52 mã biển của dataset
-  VNTS. Biển cấm/hiệu lệnh ghim thẳng điểm luật NĐ 168 theo loại xe, soát tay từng điểm, không qua tìm kiếm:
-  tìm kiếm từng trả "cấm ô tô" → phạt xe máy 10–14 triệu (khoản gây tai nạn). Biển không áp dụng cho loại xe
-  đang lái (P.103a với xe máy) hay biển cảnh báo W.* thì chỉ đọc tên biển, không đọc số tiền.
-- **Không cần torch khi chạy**: embedding và reranker chạy bằng onnxruntime (~240MB model).
-
 ## Chạy thử
 
 ```bash
 pip install -e ".[onnx,api]"
 python scripts/prepare_local_models.py   # tải + quantize model, embed corpus (~2 phút)
-cp .env.example .env                     # điền GEMINI_API_KEY / GROQ_API_KEY
+cp .env.example .env                     # điền GEMINI_API_KEY / GROQ_API_KEY (tuỳ chọn)
 uvicorn vnlaw_rag.api:app --port 8000    # mở http://localhost:8000
 ```
 
@@ -108,15 +132,23 @@ rag.search("xe may vuot den do")
 rag.lookup_sign("P.131a", vehicle="ô tô")   # biển báo -> điều khoản xử phạt (dùng trong viet-copilot)
 ```
 
-Đánh giá lại: `python -m vnlaw_rag.eval.run_eval --dense-dir data/processed/dense --dense-backend onnx --dense-model models/embedder --reranker models/reranker --reranker-backend onnx --reranker-onnx-file model_quint8_avx2.onnx`
+Đánh giá lại:
 
-Dựng lại index + ablation: `notebooks/01_build_index_eval` (Kaggle hoặc Colab, CPU là đủ).
-Chạy trên Colab: mở notebook từ GitHub (File → Open notebook → GitHub → DuongCodeAI/vn-traffic-law-rag), runtime CPU,
-thêm Secrets `GEMINI_API_KEY`, `GROQ_API_KEY`, `HF_TOKEN` (biểu tượng chìa khoá, bật Notebook access).
-Notebook tự clone code, kết quả lưu vào Google Drive (`MyDrive/ai-portfolio/vn-traffic-law-rag`).
+```bash
+python -m vnlaw_rag.eval.run_eval --dense-dir data/processed/dense --dense-backend onnx --dense-model models/embedder \
+    --reranker models/reranker --reranker-backend onnx --reranker-onnx-file model_quint8_avx2.onnx
+```
+
+Test: `pip install -e ".[dev]" && pytest -q` (CI chạy ruff + pytest mỗi lần push).
+
+Dựng lại index + ablation trên Colab: `notebooks/01_build_index_eval` (CPU là đủ). Mở notebook từ GitHub
+(File → Open notebook → GitHub → DuongCodeAI/vn-traffic-law-rag), thêm Secrets `GEMINI_API_KEY`, `GROQ_API_KEY`,
+`HF_TOKEN` (biểu tượng chìa khoá, bật Notebook access). Notebook tự clone code, kết quả lưu vào Google Drive
+(`MyDrive/ai-portfolio/vn-traffic-law-rag`). `space/` là Dockerfile cho HF Space (chưa deploy).
 
 ## Hạn chế
 
+- Bộ eval 61 câu còn nhỏ; dự định mở rộng lên ~150 câu (`eval/make_questions.py` sinh ứng viên, duyệt tay).
 - Luật 118/2025/QH15 sửa ~20 điều của Luật 36 (hiệu lực 01/07/2026) nhưng vbpl chưa cập nhật bản hợp nhất.
 - Chưa có NĐ 100/2019 (văn bản cũ) nên chưa đo được phần lọc hiệu lực theo thời gian.
 - Mức phạt riêng của Hà Nội (NQ 56/2026/NQ-HĐND) chưa có.
@@ -127,7 +159,13 @@ Notebook tự clone code, kết quả lưu vào Google Drive (`MyDrive/ai-portfo
 ```
 src/vnlaw_rag/   parse (luật -> chunk), bm25, dense/onnx_models, rerank, fusion (RRF), glossary,
                  vehicle, validity, retriever, answer (LLM + kiểm tra số), api, eval/
-data/raw/        snapshot vbpl (JSON)        data/eval/  bộ câu hỏi
-notebooks/       Kaggle: dựng index, so sánh embedding
+data/raw/        snapshot vbpl (JSON)        data/eval/  bộ câu hỏi        data/sign_map.json  biển báo -> luật
+notebooks/       dựng index, ablation (Colab)
+scripts/         chuẩn bị model ONNX trên laptop, đo thêm dấu
 space/           Dockerfile cho HF Space
 ```
+
+## License
+
+Code: MIT. Văn bản luật là văn bản quy phạm pháp luật, không thuộc đối tượng bảo hộ quyền tác giả
+(Luật SHTT, Điều 15 khoản 2). Model e5-small và mmarco-mMiniLMv2 theo license gốc trên Hugging Face.

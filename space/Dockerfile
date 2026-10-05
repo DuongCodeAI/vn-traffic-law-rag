@@ -2,7 +2,8 @@
 FROM python:3.11-slim
 
 WORKDIR /app
-RUN pip install --no-cache-dir "vnlaw-rag[onnx,api] @ git+https://github.com/DuongCodeAI/vn-traffic-law-rag" huggingface_hub
+# cài từ zip của GitHub: image slim không có git
+RUN pip install --no-cache-dir "vnlaw-rag[onnx,api] @ https://github.com/DuongCodeAI/vn-traffic-law-rag/archive/refs/heads/main.zip" huggingface_hub
 
 COPY --chown=1000 . /app
 RUN useradd -m -u 1000 user && chown -R user /app

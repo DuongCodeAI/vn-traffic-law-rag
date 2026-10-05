@@ -9,6 +9,7 @@ import argparse
 import time
 
 from vi_diacritics import Restorer
+
 from vnlaw_rag.dense import DenseIndex
 from vnlaw_rag.eval.metrics import complete_at_k, mrr, recall_at_k
 from vnlaw_rag.eval.run_eval import CONFIGS, load_questions

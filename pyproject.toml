@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Hỏi đáp Luật Giao thông Việt Nam (NĐ 168/2024, Luật TTATGTĐB 2024) bằng hybrid RAG có trích dẫn Điều/Khoản/Điểm"
 readme = "README.md"
 requires-python = ">=3.10"
+license = "MIT"
 authors = [{ name = "Tiến Dương", email = "duongcodeai2@gmail.com" }]
 dependencies = [
     "requests>=2.31",
@@ -19,7 +20,7 @@ api = ["fastapi>=0.110", "uvicorn>=0.29"]
 dev = ["pytest>=8", "ruff>=0.5"]
 
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
